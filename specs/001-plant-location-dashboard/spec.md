@@ -5,6 +5,15 @@
 **Status**: Draft
 **Input**: User description: "Build an application that combines several JSON feeds: a list of plants that require frequent watering and a list of plant specimens at the Cincinnati Zoo containing GPS locations and a foreign key to the plant list. The application should be a simple one page application where the relevant data are shown on the first page the user sees on the site."
 
+## Clarifications
+
+### Session 2026-11-24
+
+- Q: If one of the two source feeds is unavailable, should the page show no combined results until both feeds are available? → A: Show an error state and no combined results until both feeds are available.
+- Q: How should the specimen GPS location be presented to visitors? → A: Show latitude and longitude only.
+- Q: Should the first page display every matching specimen in one list, or provide browsing controls for the results? → A: Display every matching specimen in one consistently ordered list.
+- Q: How should the matching specimens be ordered in the single list? → A: Common plant name, then specimen identifier.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - View Watering-Relevant Zoo Plants (Priority: P1)
@@ -72,10 +81,12 @@ As a visitor, I want clear feedback when the source data cannot be loaded or no 
 - **FR-007**: The application MUST display each matching specimen’s specimen identifier, latitude, longitude, address, and notes when those values are available.
 - **FR-008**: The application MUST display cultivar and plant growing-condition information when available and relevant to identifying the plant.
 - **FR-009**: The application MUST display a clear loading state while the source data is being retrieved.
-- **FR-010**: The application MUST display a clear error state when either source list cannot be retrieved or cannot be interpreted.
+- **FR-010**: The application MUST display a clear error state and no combined results when either source list cannot be retrieved or cannot be interpreted.
 - **FR-011**: The application MUST display a clear no-results state when both source lists are available but no matching specimens exist.
 - **FR-012**: The application MUST keep separate specimen results separate when multiple specimens reference the same plant.
 - **FR-013**: The page MUST be usable on supported desktop and mobile screen sizes and by keyboard users.
+- **FR-014**: The application MUST display every matching specimen in one consistently ordered list without requiring search, filtering, or pagination controls.
+- **FR-015**: The application MUST order results alphabetically by common plant name and then by specimen identifier.
 
 ### Key Entities *(include if feature involves data)*
 
