@@ -37,6 +37,17 @@ The GitHub Actions workflow should:
 6. Use a protected GitHub environment for production approval and deployment secrets.
 7. Report failed build, test, or deployment steps clearly in the workflow summary.
 
+Configure the `production` GitHub environment with these values before enabling deployment:
+
+- **Secrets**: `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, and `AZURE_SUBSCRIPTION_ID`.
+- **Variables**: `AZURE_WEBAPP_NAME`.
+- **Azure identity**: Grant the federated deployment identity the minimum role needed for the
+  target App Service resource and configure the GitHub repository and `master` branch as trusted
+  OIDC subjects.
+
+The workflow must remain free of client secrets, publish profiles, subscription keys, and
+environment-specific resource identifiers.
+
 ## Azure runtime verification
 
 After deployment, verify:

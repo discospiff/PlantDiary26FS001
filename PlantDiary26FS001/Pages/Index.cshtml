@@ -1,10 +1,81 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Frequently Watered Zoo Plants";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<section class="plant-dashboard" aria-labelledby="page-heading">
+    <div class="dashboard-intro">
+        <p class="eyebrow">Cincinnati Zoo and Botanical Garden</p>
+        <h1 id="page-heading">Frequently watered plants</h1>
+        <p class="lead">Explore zoo specimens connected to plants that require frequent watering.</p>
+    </div>
+
+    <div class="status-region" role="status" aria-live="polite">
+        @if (Model.Status == PlantPageStatus.Loading)
+        {
+            <p class="alert alert-info">Loading plant data…</p>
+        }
+        else if (Model.Status == PlantPageStatus.Error)
+        {
+            <p class="alert alert-danger">@(Model.ErrorMessage ?? "The plant data is temporarily unavailable. Please try again later.")</p>
+        }
+        else if (Model.Status == PlantPageStatus.NoResults)
+        {
+            <p class="alert alert-secondary">No Cincinnati Zoo specimens matched the frequently watered plant list.</p>
+        }
+    </div>
+
+    @if (Model.Status == PlantPageStatus.Success)
+    {
+        <div class="result-summary" aria-live="polite">
+            <p><strong>@Model.Results.Count</strong> matching specimen@(Model.Results.Count == 1 ? "" : "s")</p>
+        </div>
+
+        <div class="plant-results">
+            @foreach (var result in Model.Results)
+            {
+                <article class="plant-card">
+                    <div class="plant-card-heading">
+                        <div>
+                            <p class="eyebrow">Frequently watered plant</p>
+                            <h2>@result.CommonName</h2>
+                            @if (!string.IsNullOrWhiteSpace(result.ScientificName))
+                            {
+                                <p class="scientific-name">@result.ScientificName</p>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(result.Plant.Cultivar))
+                            {
+                                <p><strong>Cultivar:</strong> @result.Plant.Cultivar</p>
+                            }
+                        </div>
+                        <span class="specimen-badge">Specimen @result.Specimen.SpecimenId</span>
+                    </div>
+
+                    <dl class="plant-details">
+                        <div>
+                            <dt>Location</dt>
+                            <dd>Latitude @result.Specimen.Latitude.ToString("0.000000")<br />Longitude @result.Specimen.Longitude.ToString("0.000000")</dd>
+                        </div>
+                        <div>
+                            <dt>Address</dt>
+                            <dd>@(string.IsNullOrWhiteSpace(result.Specimen.Address) ? "Not provided" : result.Specimen.Address)</dd>
+                        </div>
+                        <div>
+                            <dt>Growing conditions</dt>
+                            <dd>
+                                Wet soil: @IndexModel.FormatAvailability(result.Plant.WetSoil)<br />
+                                Dry soil: @IndexModel.FormatAvailability(result.Plant.DrySoil)<br />
+                                Rain garden: @IndexModel.FormatAvailability(result.Plant.RainGarden)
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>Notes</dt>
+                            <dd>@(string.IsNullOrWhiteSpace(result.Specimen.Notes) ? "Not provided" : result.Specimen.Notes)</dd>
+                        </div>
+                    </dl>
+                </article>
+            }
+        </div>
+    }
 </div>

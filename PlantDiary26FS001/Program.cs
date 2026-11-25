@@ -1,6 +1,12 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddOptions<PlantDiary26FS001.Services.PlantFeedOptions>()
+    .Bind(builder.Configuration.GetSection("PlantFeeds"))
+    .Validate(options => options.WateringPlantsUrl is not null && options.SpecimensUrl is not null,
+        "Both plant feed URLs are required.")
+    .ValidateOnStart();
+builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient<PlantDiary26FS001.Services.IPlantFeedService, PlantDiary26FS001.Services.PlantFeedService>();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();

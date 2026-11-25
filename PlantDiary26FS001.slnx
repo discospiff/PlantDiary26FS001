@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="PlantDiary26FS001/PlantDiary26FS001.csproj" />
+  <Project Path="PlantDiary26FS001.Tests/PlantDiary26FS001.Tests.csproj" />
 </Solution>
