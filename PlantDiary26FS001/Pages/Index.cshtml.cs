@@ -4,18 +4,24 @@ using PlantDiary26FS001.Services;
 
 namespace PlantDiary26FS001.Pages
 {
-    public class IndexModel(IPlantFeedService plantFeedService) : PageModel
+    public class IndexModel(IPlantFeedService plantFeedService, IWeatherService weatherService) : PageModel
     {
         public IReadOnlyList<CombinedSpecimenResult> Results { get; private set; } = Array.Empty<CombinedSpecimenResult>();
         public PlantPageStatus Status { get; private set; } = PlantPageStatus.Loading;
         public string? ErrorMessage { get; private set; }
+        public WeatherRecommendation? WeatherRecommendation { get; private set; }
 
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
-            var result = await plantFeedService.GetCombinedAsync(cancellationToken);
-            Results = result.Results;
-            ErrorMessage = result.ErrorMessage;
-            Status = result.Status switch
+            var plantTask = plantFeedService.GetCombinedAsync(cancellationToken);
+            var weatherTask = weatherService.GetRecommendationAsync(cancellationToken);
+            await Task.WhenAll(plantTask, weatherTask);
+
+            var plantResult = plantTask.Result;
+            Results = plantResult.Results;
+            ErrorMessage = plantResult.ErrorMessage;
+            WeatherRecommendation = weatherTask.Result;
+            Status = plantResult.Status switch
             {
                 PlantFeedStatus.Success => PlantPageStatus.Success,
                 PlantFeedStatus.NoResults => PlantPageStatus.NoResults,

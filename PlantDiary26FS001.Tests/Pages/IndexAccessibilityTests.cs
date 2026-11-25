@@ -9,6 +9,17 @@ public sealed class IndexAccessibilityTests
         Assert.True(File.Exists(FindRepositoryFile("PlantDiary26FS001/wwwroot/css/site.css")));
     }
 
+    [Fact]
+    public void WeatherRecommendation_HasAccessibleContextAndConditionalRendering()
+    {
+        var page = File.ReadAllText(FindRepositoryFile("PlantDiary26FS001/Pages/Index.cshtml"));
+
+        Assert.Contains("weather-recommendation", page, StringComparison.Ordinal);
+        Assert.Contains("aria-labelledby=\"weather-heading\"", page, StringComparison.Ordinal);
+        Assert.Contains("Cincinnati Zoo weather guidance", page, StringComparison.Ordinal);
+        Assert.Contains("Model.WeatherRecommendation?.IsAvailable == true", page, StringComparison.Ordinal);
+    }
+
     private static string FindRepositoryFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

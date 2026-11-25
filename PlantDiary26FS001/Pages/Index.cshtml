@@ -11,6 +11,15 @@
         <p class="lead">Explore zoo specimens connected to plants that require frequent watering.</p>
     </div>
 
+    @if (Model.WeatherRecommendation?.IsAvailable == true)
+    {
+        <aside class="weather-recommendation" aria-labelledby="weather-heading">
+            <p class="eyebrow">Cincinnati Zoo weather guidance</p>
+            <h2 id="weather-heading">Watering recommendation</h2>
+            <p>@Model.WeatherRecommendation.Message</p>
+        </aside>
+    }
+
     <div class="status-region" role="status" aria-live="polite">
         @if (Model.Status == PlantPageStatus.Loading)
         {
